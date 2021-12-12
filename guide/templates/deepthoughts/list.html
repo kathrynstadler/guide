@@ -1,0 +1,34 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% include "header.html" %}
+
+
+
+{% block title %}
+<h2 class="text-center mt-4">List of Reviews</h2>
+
+{% endblock %}
+{% block content %}
+<div class="justify-content-center">
+    <ul text-align="center">
+        {% for deepthought in deepthoughts_list %}
+        <li>{{ deepthought.location }} : {{deepthought.review}}</li>
+        <br>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+<!-- Footer -->
+<footer class="text-center text-lg-start fixed-bottom bg-dark text-muted">
+     <!-- Copyright -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2021 Copyright:
+    <a class="text-reset fw-bold" >B-24, CS 3240, UVA</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+<!-- Footer -->

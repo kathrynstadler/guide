@@ -1,0 +1,85 @@
+<!--
+REFERENCES
+Title: List Group
+Author: Bootstrap
+Date: 12/06/2021
+Code version: 5.0
+URL: https://getbootstrap.com/docs/4.4/components/list-group/
+-->
+
+
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+
+{% block title %}
+<h2 class="text-center mt-4">List of Reviews</h2>
+
+<br>
+<center>
+<h6>
+    Take a look at what other students have to say about on Grounds locations and buildings.
+    <!-- Welcome, the purpose of this page is to see what other students have to say about On-Grounds locations. -->
+    <br>
+    Connect with others to improve your on Grounds experience!
+    <br>
+</h6>
+</center>
+
+{% endblock %}
+
+<body>
+<style>
+    body {
+        background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+    .list-group-item {
+        background-color: transparent;
+        border-top: 1px solid #ddd;
+        border-radius: 0;
+        color: #010202;
+    }
+</style>
+</body>
+<br>
+<br>
+{% block content %}
+
+
+<div class="container justify-content-center mb-5">
+<center>
+    <h5>Below is a list of reviews sorted in alphabetical order with a timestamp:</h5>
+</center>
+  <div class="row justify-content-center" >
+      <ul class="list-group list-group-flush" text-align="center" >
+        {% for review in reviews_list|dictsort:"location.lower" %}
+          {{ review.created_date }}
+          <br>
+          <h6 >
+            {{ review.location }}</h6>
+            <h7 class="list-group-item">{{review.review}}</h7>
+
+        <br>
+    {% endfor %}
+        </ul>
+    </div>
+</div>
+<!--    </ul> -->
+<!--</div> -->
+{% endblock %}
+
+{% include "footer.html" %}
+
+{% else %}
+    {% include "login.html" %}
+{% endif %}

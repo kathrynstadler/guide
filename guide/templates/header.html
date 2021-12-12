@@ -1,0 +1,32 @@
+<title>UVA GUIDE</title>
+<nav class="navbar navbar-expand-sm bg-light">
+    <a class="navbar-brand mb-0 h1" href="#"></a>
+    <img src="/static/guide/images/uvalogo.png" style="width:3%">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand mb-0 h1" href="#"></a>
+        <a class="navbar-brand mb-0 h1" href="#">UVA Guide</a>
+    </nav>
+    <div class="navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="{% url 'guide:index' %}"> Home </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="{% url 'guide:map' %}"> Map </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="{% url 'guide:reviews' %}"> Post a Review </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="{% url 'guide:listR' %}"> See all Reviews </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="{% url 'guide:request' %}"> Request Point of Interest </a>
+            </li>
+        </ul>
+    </div>
+    <!-- Logout Button -->
+    <div class="navbar-collapse justify-content-end me-3">
+        <a class="btn btn-outline-primary text-end" href="/logout/" role="button">Logout</a>
+    </div>
+</nav>

@@ -1,0 +1,145 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+{% block title %}
+<div style="text-align: center;">
+<h2>Request a Point of Interest</h2>
+<br>
+<h6>This form allows you to request for a point of interest to be added to the map.</h6>
+</div>
+{% endblock %}
+
+<body>
+    <style>
+
+        body {
+            background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        h2{
+        animation: glow 2s ease-in-out infinite alternate;
+        text-align: center;
+        color: #010202;
+
+        }
+        @keyframes glow {
+            from {
+              text-shadow: 0 0 20px #097f06;
+            }
+            to {
+              text-shadow: 0 0 30px #3ec112, 0 0 10px #11c910;
+            }
+        }
+
+    /* Note: Leaf animation based on code made by Casthra Demosthene from https://codepen.io/incrediblecast/pen/yLBmVXQ*/
+
+    .leafFall div{
+        position:absolute ;
+        display:block ;
+    }
+    .leafFall div:nth-child(1){
+        left:20%;
+        animation:fall 15s linear infinite ;
+        animation-delay:-2s;
+
+    }
+    .leafFall div:nth-child(2){
+        left:60%;
+        animation:fall 15s linear infinite ;
+        animation-delay:-4s;
+    }
+    .leafFall div:nth-child(3){
+        left:10%;
+        animation:fall 20s linear infinite ;
+        animation-delay:-7s;
+
+    }
+    .leafFall div:nth-child(4){
+        left:75%;
+       animation:fall 18s linear infinite ;
+       animation-delay:-5s;
+    }
+    .leafFall div:nth-child(5){
+        left:90%;
+        animation:fall 14s linear infinite ;
+        animation-delay:-5s;
+    }
+
+
+    @keyframes fall{
+        0%{
+            opacity:1;
+            top:-10%;
+            transform:translateX (20px) rotate(0deg);
+        }
+        20%{
+            opacity:0.8;
+            transform:translateX (-20px) rotate(45deg);
+        }
+        40%{
+
+            transform:translateX (-20px) rotate(90deg);
+        }
+        60%{
+
+           transform:translateX (-20px) rotate(135deg);
+        }
+        80%{
+
+            transform:translateX (-20px) rotate(180deg);
+        }
+        100%{
+
+            top:110%;
+            transform:translateX (-20px) rotate(225deg);
+        }
+    }
+    </style>
+
+    {% block content %}
+    <div class="container">
+        <div class="form-group" width="50">
+            <form method="POST" action="success">
+                {% csrf_token %}
+                {{ form }}
+                {% block buttons %}
+                <br>
+              <button type="submit" class="btn btn-primary">Submit</button>
+                {% endblock buttons %}
+            </form>
+        </div>
+    </div>
+    
+    {% endblock content %}
+    </body>
+
+<div class = "leafFall">
+    <div><img src="https://freepngimg.com/thumb/leaf/30436-8-leaf-transparent.png" height="100px" width="100px"></img></div>
+    <div><img src="https://freepngimg.com/thumb/leaf/30436-8-leaf-transparent.png" height="100px" width="100px"></img></div>
+    <div><img src="https://freepngimg.com/thumb/leaf/30436-8-leaf-transparent.png" height="100px" width="100px" ></img></div>
+    <div><img  src="https://freepngimg.com/thumb/leaf/30436-8-leaf-transparent.png" height="100px" width="100px"></img></div>
+    <div><img src="https://freepngimg.com/thumb/leaf/30436-8-leaf-transparent.png" height="100px" width="100px"></img></div>
+</div>
+
+    <!-- Footer -->
+    <footer class="text-center text-start fixed-bottom bg-dark text-muted">
+         <!-- Copyright -->
+      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+        © 2021 Copyright:
+        <a class="text-reset fw-bold" >B-24, CS 3240, UVA</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+{% else %}
+    {% include "login.html" %}
+{% endif %}

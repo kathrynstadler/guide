@@ -1,0 +1,73 @@
+<!--
+REFERENCES
+Title: Django Crispy Forms
+Author: Miguel Araujo,  Carlton Gibson, Daniel Feldroy and other contributors
+Date: 12/06/2021
+Code version: 5.0
+URL: https://github.com/django-crispy-forms/django-crispy-forms
+-->
+
+
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+<html>
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+{% block title %}
+<div style="text-align: center;" class="mt-4">
+    <h2>Post a Review</h2>
+</div>
+{% endblock %}
+
+<br>
+<center>
+<h6>
+    Let others know what you think of on Grounds locations and buildings! Leave a review that you think would be helpful for other students below.
+    <!-- Welcome, the purpose of this page is to leave reviews on your favorite (or least favorite) locations as well as reviews on locations you think would be helpful to other students. -->
+    <br>
+</h6>
+</center>
+<br>
+
+<body>
+
+<style>
+    body {
+        background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+</style>
+
+{% block content %}
+<div class="container">
+    <div class="form-group" width="50">
+        <form method="POST" action="list" >
+            {% csrf_token %}
+            {{ form }}
+            {% block buttons %}
+            <br>
+            <button type="submit" class="btn btn-primary justify-content-center text-center">Submit</button>
+            {% endblock buttons %}
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
+</body>
+
+{% include "footer.html" %}
+
+{% else %}
+    {% include "login.html" %}
+{% endif %}
+
+</html>

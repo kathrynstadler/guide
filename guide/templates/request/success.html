@@ -1,0 +1,29 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+<style>
+body {
+    background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+</style>
+<div class="card bg-light mx-auto mt-5 p-3" style="width: 40rem;">
+    <div class="card-body text-center">
+        <h2>Successfully submitted Point of Interest!</h2>
+        <p class="card-text"><small class="text-muted">Log in to the application periodically to see if your request has been added to the map. Requests may take a few days to appear.</small></p>
+        <a href="/guide/request" class="btn btn-dark" role="button">Submit Another Request</a>
+    </div>
+</div>
+{% include "footer.html" %}
+{% else %}
+    {% include "login.html" %}
+{% endif %}

@@ -1,0 +1,23 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+<html>
+<body>
+    {% if user.is_authenticated %}
+    {% include "header.html" %}
+    <h4 class="mt-4 d-flex justify-content-center">List of Points of Interest</h4>
+    {% if latest_poi_list %}
+    <ul>
+       { % for poi in latest_poi_list % }
+            <li> {{ poi.name }}</li>
+       { % endfor %}
+    </ul>
+    {% endblock %}
+    {% else %}
+        {% include "login.html" %}
+    {% endif %}
+</body>
+</html>

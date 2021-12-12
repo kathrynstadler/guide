@@ -1,0 +1,48 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+<!-- {% if user.is_authenticated %}-->
+{% include "header.html" %}
+
+<style>
+
+
+    body {
+        background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+</style>
+
+<!--
+<div align="center" class="mt-5">
+    <h1>Thank you for entering your information!</h1>
+    <h2>This will help us personalize your experience.</h2>
+</div>
+<div class="mt-4" style="text-align: center;">
+    <a href="/guide/map" class="btn btn-dark" role="button">Continue</a>
+</div> -->
+
+<div class="card bg-light mx-auto mt-5 p-3" style="width: 40rem;">
+    <div class="card-body text-center">
+        <h2>Thank you for entering your information!</h2>
+        <h4>This will help us personalize your experience.</h4>
+        <p class="card-text"><small class="text-muted">Look out for a red map marker corresponding to your
+        address on the map page!</small></p>
+        <a href="/guide/map" class="btn btn-dark" role="button">Continue</a>
+    </div>
+</div>
+{% include "footer.html" %}
+{% else %}
+    {% include "login.html" %}
+{% endif %}
+
+
+
+

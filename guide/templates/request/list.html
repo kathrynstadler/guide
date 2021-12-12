@@ -1,0 +1,30 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+
+{% block title %}
+<div class="mt-5" style="text-align: center;">
+    <h2>Requested Points of Interest</h2>
+</div>
+{% endblock %}
+{% block content %}
+<div class="pagination justify-content-center">
+    <ul text-align="center">
+        {% for request in request_list %}
+        <li>{{ request.name }} : {{request.address}}</li>
+        <li>{{ request.latitude }}, {{ request.longitude }}</li>
+        <br>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+{% include "footer.html" %}
+
+{% else %}
+    {% include "login.html" %}
+{% endif %}

@@ -1,0 +1,33 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+<style>
+
+
+    body {
+        background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+</style>
+<div class="card bg-light mx-auto mt-5 p-3" style="width: 40rem;">
+    <div class="card-body text-center">
+        <h2>Thaere was an issue with the provided Point of Interest. Please try again.</h2>
+        <h4>The address you entered falls outside of the Charlottesville area.</h4>
+        <p class="card-text"><small class="text-muted">If this is not the case, please provide a more specific address, incuding city and zip code.</small></p>
+        <a href="/guide/request" class="btn btn-dark" role="button">Submit Another Request</a>
+    </div>
+</div>
+{% include "footer.html" %}
+
+{% else %}
+    {% include "login.html" %}
+{% endif %}

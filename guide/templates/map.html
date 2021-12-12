@@ -1,0 +1,408 @@
+<!--
+REFERENCES
+Title: Mapbox Docs GL JS API Reference
+Author: Mapbox
+Date: 11/25/2021
+Code version: 2.5.0
+URL: https://docs.mapbox.com/mapbox-gl-js/api/
+Software License: BSD-3
+
+Title: Get started with the Map Matching API
+Author: Mapbox
+Date: 12/03/2021
+Code version: 5
+URL: https://docs.mapbox.com/help/tutorials/get-started-map-matching-api/
+Software License: BSD-3
+
+Title: Django + Ajax
+Author: Django Central
+Date: 12/04/2021
+URL: https://djangocentral.com/django-ajax-with-jquery/, https://github.com/TheAbhijeet/Django-with-JQuery-and-AJAX
+Software License: None
+
+Title: Display navigation directions
+Author: Mapbox
+Date: 11/25/2021
+Code version: 2.5.0
+URL: https://docs.mapbox.com/mapbox-gl-js/example/mapbox-gl-directions/
+Software License: BSD-3
+-->
+
+<html>
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+<head>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css' rel='stylesheet'/>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" type="text/css">
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+<div class="accordion float-start mt-4 ms-3" style="width:22%" id="instructions">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="h1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">How It Works</button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="h1" data-bs-parent="#instructions">
+            <div class="accordion-body">
+                <strong>There are two different routing possibilities on the map.</strong>
+                The <strong>first</strong> is to select your mode of transportation and enter two locations into points <i>A</i> and <i>B</i> on the map.
+                The <strong>second</strong> is to draw your own route using the <i>draw</i> feature.
+                View the <strong><i>short cut routes</i></strong> tab for more information on drawing your own routes.
+                <br>
+                Through generating your own paths, you can map your daily class routes or schedule. The map uses weights
+                and coordinates to determine appropriate paths around Grounds, including "short-cut" paths.
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="h2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Short-Cut Routes</button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="h2" data-bs-parent="#instructions">
+            <div class="accordion-body">
+                <strong>To begin drawing your route,</strong> select the <i>draw</i> icon. Select a starting and ending point
+                on the map. If there is a specific short-cut you have in mind, add additional waypoints by creating
+                intermediate points in your route. When you are satisfied with your route, press the <i>return</i> key.
+                View detailed instructions in the <i>your most recent route</i> tab.
+                <div id='drawicon'>
+                    <img src="/static/guide/images/drawicon.png" class="img-fluid rounded float-left border" style="width:7%" alt="Error loading image">
+                    Select the draw icon to create a new route
+                </div>
+                <div>
+                    <img src="/static/guide/images/deleteicon.png" class="img-fluid rounded float-left border" style="width:7%" alt="Error loading image">
+                    Select the delete icon to delete a route
+                </div>
+                <div>
+                    <img src="/static/guide/images/geoicon.png" class="img-fluid rounded float-left border" style="width:7%" alt="Error loading image">
+                    Select the locate icon to find your location
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="h3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Your Most Recent Route</button>
+        </h2>
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="h3" data-bs-parent="#instructions">
+            <div class="accordion-body">
+                <div class="info-box">
+                    <div id="directionsName"></div>
+                    <div id="directions"></div>
+                    <div class="container">
+                        <div class="form-group" width="50">
+                            {% if messages %}
+                            {% else %}
+                            <form id='sendSMS' method="POST" action="">
+                                {% csrf_token %}
+                                <input  type="hidden" id="dir_message" type="text" value="" name="dir_message">
+                                {% block buttons %}
+                                <br>
+                                <button type="submit" class="btn btn-primary" id="SMSButton">Send Directions to Phone</button>
+                                {% endblock buttons %}
+                            </form>
+                            <div id="output">
+                            </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='map' class='w-75 float-end mt-4 me-3 mb-5' style='height:575px'></div>
+
+<script>
+
+    // Mapbox API Access Token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamN0N2JtIiwiYSI6ImNrdXd6NmI0ejZvMjIyb256eGptM3BjOXUifQ.hwBKBqXVDCaDI2HhznojQA';
+
+    // Bounds of map
+    const bounds = [
+        [-78.39784,38.04161],
+        [-78.56461,38.04905]
+    ];
+
+    // Create the map
+    var map = new mapboxgl.Map({
+        id: 'guide-map',
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-78.50390,38.03470], // Center on Lawn
+        zoom: 17,
+    })
+
+    // User's personal address
+    user_lat = parseFloat("{{ lat }}"); // Latitude extracted from home page form
+    user_long = parseFloat("{{ long }}"); // Longitude extracted from home page form
+    // Default value for latitude and longitude is [0, 0]
+    // If the user has not entered an address do not create the map marker
+    if (user_lat != 0 && user_long != 0) {
+        const popup = new mapboxgl.Popup().setText('Home');
+        const marker = new mapboxgl.Marker({'color': 'red'})
+            .setLngLat([user_long,user_lat])
+            .setPopup(popup)
+            .addTo(map);
+    }
+    // Create the geolocation button
+    const geolocate = new mapboxgl.GeolocateControl({
+        id: 'geo-button',
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserHeading: true
+    });
+    // Add geolocation button to the map
+    map.addControl(geolocate);
+
+    // Create the search bar
+    map.addControl(
+        new MapboxDirections({
+            id: 'search-bar',
+            accessToken: mapboxgl.accessToken,
+            geocoder: {
+                bbox: [-78.594818,37.969643,-78.388824,38.088905],
+            },
+            // This passes parameters to the internal Geocoder object for the Directions UI
+            walkway_bias: 0.75,
+            interactive: false // Disable interactive mode for drawing feature
+        }),
+    'top-left' // Position in the top left of the map
+    );
+
+    // Adding map matching
+    const draw = new MapboxDraw({
+    displayControlsDefault: false,
+    controls: {
+        line_string: true,
+        trash: true
+    },
+    defaultMode: 'draw_line_string',
+    styles: [
+        {
+            id: 'gl-draw-line',
+            type: 'line',
+            filter: ['all', ['==', '$type', 'LineString'], ['!=', 'mode', 'static']],
+            layout: {
+                'line-cap': 'round',
+                'line-join': 'round'
+            },
+            paint: {
+                'line-color': '#E74C3C',
+                'line-width': 8,
+                'line-opacity': 0.7
+            }
+        },
+        {
+            id: 'gl-draw-polygon-and-line-vertex-halo-active',
+            type: 'circle',
+            filter: [
+                'all',
+                ['==', 'meta', 'vertex'],
+                ['==', '$type', 'Point'],
+                ['!=', 'mode', 'static']
+            ],
+            paint: {
+                'circle-radius': 12,
+                'circle-color': '#FFF'
+            }
+        },
+        {
+            id: 'gl-draw-polygon-and-line-vertex-active',
+            type: 'circle',
+            filter: [
+                'all',
+                ['==', 'meta', 'vertex'],
+                ['==', '$type', 'Point'],
+                ['!=', 'mode', 'static']
+            ],
+            paint: {
+                'circle-radius': 8,
+                'circle-color': '#438EE4'
+            }
+        }
+    ]
+    });
+    // Adding drawing control to the map
+    map.addControl(draw);
+
+    // Updating the route
+    function updateRoute() {
+        const profile = 'walking';
+        const data = draw.getAll();
+        const lastFeature = data.features.length - 1;
+        const coords = data.features[lastFeature].geometry.coordinates;
+        const newCoords = coords.join(';');
+        const radius = coords.map(() => 10); // 25
+        getMatch(newCoords, radius, profile);
+    }
+
+    async function getMatch(coordinates, radius, profile) {
+        const radiuses = radius.join(';');
+        const query = await fetch(
+            `https://api.mapbox.com/matching/v5/mapbox/${profile}/${coordinates}?geometries=geojson&radiuses=${radiuses}&steps=true&access_token=${mapboxgl.accessToken}`,
+            { method: 'GET' }
+        );
+        const response = await query.json();
+        // If the user does not enter precise enough way points, or points that are too far in distance, raise error
+        if (response.code !== 'Ok') {
+            alert(`Oops! Looks like there is a problem with your route.\nMake sure your route is on-Grounds and has enough waypoints!`);
+            return;
+        }
+        const coords = response.matchings[0].geometry;
+        console.log(coords);
+    }
+    map.on('draw.create', updateRoute);
+    map.on('draw.update', updateRoute);
+
+    function addRoute(coords) {
+        if (map.getSource('route')) {
+            map.removeLayer('route');
+            map.removeSource('route');
+        } else {
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: coords
+                    }
+                },
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                paint: {
+                    'line-color': '#2874A6',
+                    'line-width': 8,
+                    'line-opacity': 0.8
+                }
+            });
+        }
+    }
+    async function getMatch(coordinates, radius, profile) {
+        const radiuses = radius.join(';');
+        const query = await fetch(
+            `https://api.mapbox.com/matching/v5/mapbox/${profile}/${coordinates}?geometries=geojson&radiuses=${radiuses}&steps=true&access_token=${mapboxgl.accessToken}`,
+            { method: 'GET' }
+        );
+        const response = await query.json();
+        if (response.code !== 'Ok') {
+            alert(`Oops! Looks like there is a problem with your route.\nMake sure your route is on-Grounds and has enough waypoints!`);
+            return;
+        }
+        const coords = response.matchings[0].geometry;
+        addRoute(coords);
+        console.log(coords);
+    }
+    function getInstructions(data) {
+        const directions = document.getElementById('directions');
+        let tripDirections = '';
+        for (const leg of data.legs) {
+            const steps = leg.steps;
+            for (const step of steps) {
+                tripDirections += `<li>${step.maneuver.instruction}</li>`;
+            }
+        }
+        directions.innerHTML = `<p><strong>Trip duration: ${Math.floor(
+            data.duration / 60
+        )} min.</strong></p><ol>${tripDirections}</ol>`;
+        document.getElementById('dir_message').value = directions.innerHTML.replace(/<[^>]+>/g, '\n');
+    }
+    async function getMatch(coordinates, radius, profile) {
+        const radiuses = radius.join(';');
+        const query = await fetch(
+            `https://api.mapbox.com/matching/v5/mapbox/${profile}/${coordinates}?geometries=geojson&radiuses=${radiuses}&steps=true&access_token=${mapboxgl.accessToken}`,
+            { method: 'GET' }
+        );
+        const response = await query.json();
+        if (response.code !== 'Ok') {
+            alert(`Oops! Looks like there is a problem with your route.\nMake sure your route is on-Grounds and has enough waypoints!`);
+            return;
+        }
+        const coords = response.matchings[0].geometry;
+        addRoute(coords);
+        getInstructions(response.matchings[0]);
+        const destSummary = response.matchings[0].legs;
+        const logName = destSummary[0].summary;
+        console.log(logName);
+        const directionsName = document.getElementById('directionsName');
+        directionsName.innerHTML = logName;
+    }
+
+    // Delete route on the map
+    function removeRoute() {
+        if (!map.getSource('route')) return;
+        map.removeLayer('route');
+        map.removeSource('route');
+    }
+    map.on('draw.delete', removeRoute);
+
+    $(document).on('submit', '#sendSMS', function(e){
+        e.preventDefault();
+        var message = $('#dir_message').val()
+        if (message == "") { 
+            $('#output').html("<p>No route created!</p>")
+            $('#output').append($('#drawicon'))
+        }
+
+        else {
+            $.ajax({
+                type : "POST", 
+                url: "{% url  'guide:send_sms' %}", // This is broken
+                data: {
+                    dir_message: $('#dir_message').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+                },
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+                success: function(data){
+                    $('#output').html("<p>MESSAGE SENT</p>")
+                    .hide()
+                    .fadeIn(500)
+                    .fadeOut(7000)
+
+                },
+
+                failure: function() {
+
+                }
+
+            });
+        }
+    })
+
+    // Zoom button
+    map.addControl(new mapboxgl.NavigationControl());
+</script>
+
+</body>
+
+{% else %}
+    {% include "login.html" %}
+{% endif %}
+
+</html>

@@ -1,0 +1,19 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+<div class="card mx-auto mt-5" style="width: 27rem;">
+    <img class="card-img-top" src="/static/guide/images/mapmarker.jpg">
+    <div class="card-body">
+        <h4 class="card-title text-center">UVA Guide</h4>
+        <h6 class="card-subtitle mb-2 text-muted text-center">Brought to you by Team B-24</h6>
+        <p class="card-text">
+            Welcome to the UVA Guide application! With this application you can find routes to class,
+            leave reviews, connect with others, and personalize your on-Grounds experience. Login to get started!
+        </p>
+        <div class="text-center"><a class="btn btn-dark" href="{% provider_login_url 'google' %}" role="button">Login With Google</a></div>
+    </div>
+</div>

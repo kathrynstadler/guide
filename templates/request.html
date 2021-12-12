@@ -1,0 +1,54 @@
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load socialaccount %}
+
+{% if user.is_authenticated %}
+{% include "header.html" %}
+
+{% block title %}
+<div class="text-center mt-4">
+<h2>Request a Point of Interest</h2>
+<br>
+<h6>Can't find the location you were looking for? This form allows you to request for it to be added to the map page.</h6>
+<h6>Note: Your request will not show up on the map immediately. Check back periodically for updates!</h6>
+</div>
+{% endblock %}
+
+<body>
+
+  <style>
+
+
+    body {
+        background: url({% static "/guide/images/homebg.jpg" %}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+  </style>
+    {% block content %}
+    <div class="container">
+        <div class="form-group" width="50">
+            <form method="POST" action="done">
+                {% csrf_token %}
+                {{ form }}
+                {% block buttons %}
+                <br>
+              <button type="submit" class="btn btn-primary">Submit</button>
+                {% endblock buttons %}
+            </form>
+        </div>
+    </div>
+    
+    {% endblock content %}
+    </body>
+
+{% include "footer.html" %}
+
+{% else %}
+    {% include "login.html" %}
+{% endif %}
